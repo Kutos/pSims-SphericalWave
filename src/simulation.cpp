@@ -3,6 +3,9 @@
 #include <chrono>
 #include <cmath>
 #include "omp.h"
+#include <ctime>
+#include <cstring>
+#include "hdf5Helper.hpp"
 #include "particle.hpp"
 #include "simulation.hpp"
 
@@ -126,7 +129,11 @@ auto simulate(
     const uint8_t& nDim,
     const bool& walls) -> void
 {
-    std::cout << omp_get_max_threads() << std::endl;
+    std::time_t t = std::time(0);   // get time now
+    struct tm * now = localtime( & t );
+    char buffer [80];
+    strftime (buffer,80,"results-%Y-%m-%d-%H-%M.h5",now);
+    hdf5Helper output(buffer, lBox, dX, dT, wave_speed, wave_width, wave_range, nStep, nParticles, nDim, walls);
     particle particles_array[nParticles];
     uint16_t nWave;
     {
@@ -173,6 +180,7 @@ auto simulate(
                     computeMotion(&(particles_array[p]), dV, wave_speed, dT, lBox, nDim, walls);
                 }
             }
+            output.writeStep(particles_array, nParticles, step, nDim);
         }
 
     }

@@ -101,17 +101,12 @@ auto main(int argc, char* argv[]) -> int
     if(paramsValidation != "ok")
         return EXIT_SUCCESS;
 
-    omp_set_dynamic(false);
+    omp_set_dynamic(true);
     omp_set_num_threads(static_cast<int>(nThreads));
     auto start = std::chrono::high_resolution_clock::now();
     simulate(lBox, dX, dT, wave_speed, wave_witdh, wave_range, nStep, nParticles, nDim, walls);
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> elapsed{ finish - start };
     std::cout << "Elapsed time: " << elapsed.count() << " s\n";
-    std::ofstream plot_output{"plot.sh"};
-    plot_output << "python plot.py -nstep " << nStep << " -lbox " << lBox;
-    plot_output.close();
-
-    
     return EXIT_SUCCESS;
 }

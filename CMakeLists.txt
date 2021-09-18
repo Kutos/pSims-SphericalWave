@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(exec "${PROJECT_SOURCE_DIR}/src/main.cpp"
                     "${PROJECT_SOURCE_DIR}/src/particle.cpp"
                     "${PROJECT_SOURCE_DIR}/src/wave.cpp"
-                    "${PROJECT_SOURCE_DIR}/src/simulation.cpp")
+                    "${PROJECT_SOURCE_DIR}/src/simulation.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/hdf5Helper.cpp")
 
 set_target_properties(exec PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
 
