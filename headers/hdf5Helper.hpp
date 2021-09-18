@@ -26,26 +26,14 @@ private:
 
     hid_t sParticle_id;
     DataSpace simMSpace;
-    struct sSim1D
+    
+    struct sSim
     {
         int t;
         int p;
-        int x;
-    };
-    struct sSim2D
-    {
-        int t;
-        int p;
-        int x;
-        int y;
-    };
-    struct sSim3D
-    {
-        int t;
-        int p;
-        int x;
-        int y;
-        int z;
+        float x;
+        float y;
+        //float z;
     };
 
 public:

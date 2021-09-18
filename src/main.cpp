@@ -7,7 +7,7 @@
 #include "simulation.hpp"
 
 /*
-./exec --nthread 8 --nstep 100 --nparticles 50 --sbox 1.0 --dx 1e-4 --dt 1e-2 --lightspeed 0.5 --width 0.5 --range 5e-2
+./exec --nthread 8 --nstep 100 --nparticles 50 --lbox 1.0 --dx 1e-4 --dt 1e-2 --lightspeed 0.5 --width 0.5 --range 5e-2
 */
 auto main(int argc, char* argv[]) -> int
 {
@@ -25,7 +25,7 @@ auto main(int argc, char* argv[]) -> int
 
     for(auto i{1}; i < argc; i++)
     {
-		if(argv[i] == "-h" || argv[i] == "--help")
+		if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
         {
 			std::cout << "Usage: App <options>\nOptions are: \n";
 			std::cout << "--nthread: define the number of thread used during parallel computation.\n";
@@ -39,43 +39,43 @@ auto main(int argc, char* argv[]) -> int
 			std::cout << "--range: define the wave's range.\n";
 			std::cout << "--walls: Will enabled the bouncing at box limit otherwise the box will be cyclic.\n";
             return EXIT_SUCCESS;
-        }else if (argv[i] == "--nthread")
+        }else if (!strcmp(argv[i], "--nthread"))
         {
             i++;
             nThreads = std::stoi(argv[i]);
-        }else if (argv[i] == "--nstep")
+        }else if (!strcmp(argv[i], "--nstep"))
         {
             i++;
             nStep = std::stoi(argv[i]);
-        }else if (argv[i] == "--nparticles")
+        }else if (!strcmp(argv[i], "--nparticles"))
         {
             i++;
             nParticles = std::stoi(argv[i]);
-        }else if (argv[i] == "--lbox")
+        }else if (!strcmp(argv[i], "--lbox"))
         {
             i++;
             lBox = std::stof(argv[i]);
-        }else if (argv[i] == "--dx")
+        }else if (!strcmp(argv[i], "--dx"))
         {
             i++;
             dX = std::stof(argv[i]);
-        }else if (argv[i] == "--dt")
+        }else if (!strcmp(argv[i], "--dt"))
         {
             i++;
             dT = std::stof(argv[i]);
-        }else if (argv[i] == "--speed")
+        }else if (!strcmp(argv[i], "--speed"))
         {
             i++;
             wave_speed = std::stof(argv[i]);
-        }else if (argv[i] == "--witdh")
+        }else if (!strcmp(argv[i], "--witdh"))
         {
             i++;
             wave_witdh = std::stof(argv[i]);
-        }else if (argv[i] == "--range")
+        }else if (!strcmp(argv[i], "--range"))
         {
             i++;
             wave_range = std::stof(argv[i]);
-        }else if (argv[i] == "--walls")
+        }else if (!strcmp(argv[i], "--walls"))
         {
             walls = true;
         }

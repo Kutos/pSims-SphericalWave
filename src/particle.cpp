@@ -1,5 +1,6 @@
 #include "particle.hpp"
 #include "wave.hpp"
+#include <iostream>
 #include <cstdint>
 #include <cmath>
 #include <chrono>
@@ -98,7 +99,6 @@ particle& particle::operator=(particle&& p)
 
     return *this;
 }
-
 
 auto particle::setPosition(const float* pos) -> void
 {

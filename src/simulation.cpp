@@ -69,24 +69,31 @@ auto computeMotion(
 
     for(uint8_t i{0}; i < nDim; i++)
     {
+        // computing v_{t+1, i} = a_{t+1, i} * dt + v_{t, i} 
         new_V[i] = (temp * dV[i]) * dT + pa->getVelocity(i);
+        // computing v_{t+1}²
         new_X[0] += new_V[i] * new_V[i];
     }
 
+    // computing c²
     new_X[1] = wave_speed * wave_speed;
+    // computing 1 + v_{t+1}²/c²
     new_X[0] = 1.f + (new_X[0] / new_X[1]);
+    // computing the lorentz factor: 1 / (1 + v_{t+1}²/c²)
     temp = 1.f / sqrt(new_X[0]);
     
     for(uint8_t i{0}; i < nDim; i++)
     {
+        // multipling v_{t+1, i} by the lorentz factor
         new_V[i] *= temp;
+        // computing x_{t+1, i}
         new_X[i] = pa->getVelocity(i) * dT + pa->getPosition(i);
     }
-
     temp = .5f * lBox;
 
     if(walls)
     {
+        // make bounce against walls
         for(uint8_t i{0}; i < nDim; i++)
         {
             if(new_X[i] < - temp)
@@ -103,13 +110,13 @@ auto computeMotion(
         }
 
     }else{
+        // make apears to the other side
         for(uint8_t i{0}; i < nDim; i++)
         {
             if(new_X[i] < - temp) new_X[0] = temp + std::fmod(new_X[i], temp);
             else if(new_X[i] > temp) new_X[0] = - temp + std::fmod(new_X[i], temp);
         }
     }
-    
     // Updating the position in particles list
     pa->setPosition(new_X);
     // Updating the velocity in particles list

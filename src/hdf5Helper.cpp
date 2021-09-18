@@ -48,16 +48,16 @@ hdf5Helper::hdf5Helper(
         hsize_t simMDims[1] = {H5S_UNLIMITED};
         DataSpace simMSpace(1, simDims, simMDims);
         sParticle_id = H5Tcreate(H5T_COMPOUND, 8 + 4*nDim);
-        H5Tinsert(sParticle_id, "Time", 0, H5T_NATIVE_INT);
-        H5Tinsert(sParticle_id, "pID", 4, H5T_NATIVE_INT);
-        H5Tinsert(sParticle_id, "x", 8, H5T_NATIVE_FLOAT);
+        H5Tinsert(sParticle_id, "Time", HOFFSET(sSim, t), H5T_NATIVE_INT);
+        H5Tinsert(sParticle_id, "pID", HOFFSET(sSim, p), H5T_NATIVE_INT);
+        H5Tinsert(sParticle_id, "x", HOFFSET(sSim, x), H5T_NATIVE_FLOAT);
         if(nDim > 1)
         {
-            H5Tinsert(sParticle_id, "y", 12, H5T_NATIVE_FLOAT);
-            if(nDim > 2)
+            H5Tinsert(sParticle_id, "y", HOFFSET(sSim, y), H5T_NATIVE_FLOAT);
+            /*if(nDim > 2)
             {
-                H5Tinsert(sParticle_id, "z", 16, H5T_NATIVE_FLOAT);
-            }
+                H5Tinsert(sParticle_id, "z", HOFFSET(sSim, z), H5T_NATIVE_FLOAT);
+            } */
         }
         DSetCreatPropList cparms;
 
@@ -104,38 +104,14 @@ auto hdf5Helper::writeStep(
     fspace.selectHyperslab(H5S_SELECT_SET, dims, offset);
     DataSpace mspace(1, dims);
 
-    if(nDim == 1)
+    sSim data[nParticles];
+    for(uint i{0}; i < nParticles; i++)
     {
-        sSim1D data[nParticles];
-        for(uint i{0}; i < nParticles; i++)
-        {
-            data[i].t = step;
-            data[i].p = i;
-            data[i].x = particles_array[i].getPosition(0);
-        }
-        simDataset.write(data, sParticle_id, mspace, fspace);
-    }else if(nDim == 2)
-    {
-        sSim2D data[nParticles];
-        for(uint i{0}; i < nParticles; i++)
-        {
-            data[i].t = step;
-            data[i].p = i;
-            data[i].x = particles_array[i].getPosition(0);
-            data[i].y = particles_array[i].getPosition(1);
-        }
-        simDataset.write(data, sParticle_id, mspace, fspace);
-    }else if(nDim == 3)
-    {
-        sSim3D data[nParticles];
-        for(uint i{0}; i < nParticles; i++)
-        {
-            data[i].t = step;
-            data[i].p = i;
-            data[i].x = particles_array[i].getPosition(0);
-            data[i].y = particles_array[i].getPosition(1);
-            data[i].z = particles_array[i].getPosition(2);
-        }
-        simDataset.write(data, sParticle_id, mspace, fspace);
+        data[i].t = step;
+        data[i].p = i;
+        data[i].x = particles_array[i].getPosition(0);
+        if(nDim > 1) data[i].y = particles_array[i].getPosition(1);
+        //if(nDim > 2) data[i].z = particles_array[i].getPosition(2);
     }
+    simDataset.write(data, sParticle_id, mspace, fspace);
 }
