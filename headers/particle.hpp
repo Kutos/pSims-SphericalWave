@@ -21,7 +21,7 @@ public:
     particle(particle&&);
     particle(const float& lBox, const float& mass,
     const float* wave_speed, const float* wave_width, const float* wave_range,
-    const uint8_t* nDim, const uint16_t* nWave, const bool& chargeSign);
+    const uint8_t* nDim, const uint16_t* nWave, const uint16_t& p);
     ~particle();
 
     particle& operator=(const particle& p);

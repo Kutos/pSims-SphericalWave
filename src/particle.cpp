@@ -7,15 +7,25 @@
 #include "omp.h"
 
 particle::particle() 
-    : mass(0.f), nWave(nullptr), nDim(nullptr), chargeSign(false),
+    : nWave(nullptr), nDim(nullptr),
     position(nullptr), velocity(nullptr), waves_list(nullptr){}
 
 particle::particle(const particle& p) 
     : mass(p.mass), nWave(p.nWave), nDim(p.nDim), chargeSign(p.chargeSign)
 {
-    position = new float(*p.position);
-    velocity = new float(*p.velocity);
-    waves_list = new wave(*p.waves_list);
+    position = new float[*nDim];
+    velocity = new float[*nDim];
+    waves_list = new wave[*nWave];
+
+    for(uint8_t d = 0; d < *nDim; d++)
+    {
+        position[d] = p.position[d];
+        velocity[d] = p.velocity[d];
+    }
+
+    for(uint16_t w = 0; w < *nWave; w++)
+        waves_list[w] = p.waves_list[w];
+
 }
 
 particle::particle(particle&& p) 
@@ -31,24 +41,28 @@ particle::particle(particle&& p)
 
 particle::particle(const float& lBox, const float& mass,
     const float* wave_speed, const float* wave_width, const float* wave_range,
-    const uint8_t* nDim, const uint16_t* nWave, const bool& chargeSign)  
-    : mass(mass), nDim(nDim), nWave(nWave), chargeSign(chargeSign)
+    const uint8_t* nDim, const uint16_t* nWave, const uint16_t& p)  
+    : mass(mass), nDim(nDim), nWave(nWave)
 {
-    const float lBoxd5 = .5 * lBox;
-    uint seed;
+    const float lBoxd5 = .5f * lBox;
+    unsigned int seed, _seed = static_cast<unsigned int>(p * (*nDim + 1) * uint32_t(time(nullptr)));
     position = new float[*nDim];
     velocity = new float[*nDim];
     waves_list = new wave[*nWave];
 
-    srand(static_cast<long int>(time(NULL) * omp_get_num_threads()));
-
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d = 0; d < *nDim; d++)
     {
-        seed = rand() * (d+1);
-        position[d] = float{rand_r(&seed) % int{lBox * 1000.f}} / 1000.f - lBoxd5;
+        srand(static_cast<unsigned int>(_seed * (d + 1)));
+        seed = static_cast<unsigned int>(rand());
+        position[d] = static_cast<float>(rand_r(&seed) % static_cast<int>(lBox * 1.e3f))
+                            / 1.e3f - lBoxd5;
     }
 
-    for(uint16_t w{0}; w < *nWave; w++)
+    srand(static_cast<unsigned int>(_seed * (*nDim + 1)));
+    seed = rand();
+    chargeSign = (rand_r(&seed) % 2) == 1;
+
+    for(uint16_t w = 0; w < *nWave; w++)
     {
         waves_list[w] = wave(position, wave_speed, wave_width, wave_range, nDim);
     }
@@ -67,15 +81,26 @@ particle::~particle()
 particle& particle::operator=(const particle& p)
 {
     if(this == &p) return *this;
+
     this->~particle();
 
     mass = p.mass;
     chargeSign = p.chargeSign;
     nDim = p.nDim;
     nWave = p.nWave;
-    position = new float(*p.position);
-    velocity = new float(*p.velocity);
-    waves_list = new wave(*p.waves_list);
+
+    position = new float[*nDim];
+    velocity = new float[*nDim];
+    waves_list = new wave[*nWave];
+
+    for(uint8_t d = 0; d < *nDim; d++)
+    {
+        position[d] = p.position[d];
+        velocity[d] = p.velocity[d];
+    }
+
+    for(uint16_t w = 0; w < *nWave; w++)
+        waves_list[w] = p.waves_list[w];
 
     return *this;
 }
@@ -102,12 +127,12 @@ particle& particle::operator=(particle&& p)
 
 auto particle::setPosition(const float* pos) -> void
 {
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d =0; d < *nDim; d++)
         position[d] = pos[d];
 }
 auto particle::setVelocity(const float* vel) -> void
 {
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d = 0; d < *nDim; d++)
         velocity[d] = vel[d];
 }
 

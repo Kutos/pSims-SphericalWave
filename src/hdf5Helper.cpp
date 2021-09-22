@@ -47,9 +47,10 @@ hdf5Helper::hdf5Helper(
         hsize_t simDims[1] = {nParticles};
         hsize_t simMDims[1] = {H5S_UNLIMITED};
         DataSpace simMSpace(1, simDims, simMDims);
-        sParticle_id = H5Tcreate(H5T_COMPOUND, 8 + 4*nDim);
-        H5Tinsert(sParticle_id, "Time", HOFFSET(sSim, t), H5T_NATIVE_INT);
+        sParticle_id = H5Tcreate(H5T_COMPOUND, sizeof(sSim));
+        H5Tinsert(sParticle_id, "time", HOFFSET(sSim, t), H5T_NATIVE_INT);
         H5Tinsert(sParticle_id, "pID", HOFFSET(sSim, p), H5T_NATIVE_INT);
+        H5Tinsert(sParticle_id, "charge", HOFFSET(sSim, q), H5T_NATIVE_HBOOL);
         H5Tinsert(sParticle_id, "x", HOFFSET(sSim, x), H5T_NATIVE_FLOAT);
         if(nDim > 1)
         {
@@ -105,10 +106,11 @@ auto hdf5Helper::writeStep(
     DataSpace mspace(1, dims);
 
     sSim data[nParticles];
-    for(uint i{0}; i < nParticles; i++)
+    for(uint i = 0; i < nParticles; i++)
     {
         data[i].t = step;
         data[i].p = i;
+        data[i].q = particles_array[i].getChargeSign();
         data[i].x = particles_array[i].getPosition(0);
         if(nDim > 1) data[i].y = particles_array[i].getPosition(1);
         //if(nDim > 2) data[i].z = particles_array[i].getPosition(2);

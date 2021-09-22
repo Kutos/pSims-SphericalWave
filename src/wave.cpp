@@ -9,7 +9,7 @@ wave::wave(const wave& w)
     : wave_speed(w.wave_speed), wave_width(w.wave_width), wave_range(w.wave_range), radius(w.radius), nDim(nDim)
 {
     center = new float[*nDim];
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d = 0; d < *nDim; d++)
         center[d] = w.center[d];
 }
 wave::wave(wave&& w) 
@@ -23,7 +23,7 @@ wave::wave(const float* ctr, const float* wave_speed, const float* wave_width, c
     : wave_speed(wave_speed), wave_width(wave_width), wave_range(wave_range), radius(0.f), nDim(nDim)
 {
     center = new float[*nDim];
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d = 0; d < *nDim; d++)
         center[d] = ctr[d];
 }
 wave::~wave()
@@ -71,7 +71,7 @@ wave& wave::operator=(wave&& w)
 
 auto wave::resetCenter(const float* ctr) -> void
 {
-    for(uint8_t d{0}; d < *nDim; d++)
+    for(uint8_t d = 0; d < *nDim; d++)
         center[d] = ctr[d];
 }
 
@@ -84,7 +84,7 @@ auto wave::calEnergieValue1D(const float* position, const float& lBox, const uin
     float invRange2{1.f / ( (*wave_range )* (*wave_range))};
     float width_factor{1.f / ((*wave_width) * (*wave_width) * m)};
 
-    for(int8_t i{-nNeighbors}; i < nNeighbors + 1; i++)
+    for(int8_t i = - static_cast<int8_t>(nNeighbors); i < nNeighbors + 1; i++)
     {
         a = (position[0] - (center[0] - i * lBox)) - radius;
         b = a * invRange2;
@@ -105,11 +105,11 @@ auto wave::calEnergieValue2D(const float* position, const float& lBox, const uin
     float invRange2{1.f / ( (*wave_range )* (*wave_range))};
     float width_factor{1.f / ((*wave_width) * (*wave_width) * m)};
 
-    for(int8_t i{-nNeighbors}; i < nNeighbors + 1; i++)
+    for(int8_t i = - static_cast<int8_t>(nNeighbors); i < nNeighbors + 1; i++)
     {
         a = (position[0] - (center[0] - i * lBox));
         a *= a;
-        for(int8_t j{-nNeighbors}; j < nNeighbors + 1; j++)
+        for(int8_t j = - static_cast<int8_t>(nNeighbors); j < nNeighbors + 1; j++)
         {
             b = (position[1] - (center[1] - j * lBox));
             b = (b * b) + a;
@@ -132,15 +132,15 @@ auto wave::calEnergieValue3D(const float* position, const float& lBox, const uin
     float invRange2{1.f / ( (*wave_range )* (*wave_range))};
     float width_factor{1.f / ((*wave_width) * (*wave_width) * m)};
 
-    for(int8_t i{-nNeighbors}; i < nNeighbors + 1; i++)
+    for(int8_t i = - static_cast<int8_t>(nNeighbors); i < nNeighbors + 1; i++)
     {
         a = (position[0] - (center[0] - i * lBox));
         a *= a;
-        for(int8_t j{-nNeighbors}; j < nNeighbors + 1; j++)
+        for(int8_t j = - static_cast<int8_t>(nNeighbors); j < nNeighbors + 1; j++)
         {
             b = (position[1] - (center[1] - j * lBox));
             b = (b * b) + a;
-            for(int8_t k{-nNeighbors}; k < nNeighbors + 1; k++)
+            for(int8_t k = - static_cast<int8_t>(nNeighbors); k < nNeighbors + 1; k++)
             {
                 c = (position[2] - (center[2] - k * lBox));
                 c = (c * c) + b;

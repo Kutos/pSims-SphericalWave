@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <string>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -11,19 +12,19 @@
 */
 auto main(int argc, char* argv[]) -> int
 {
-    float lBox{1.f};
-    float dX{1e-4f};
-    float dT{1e-2f};
-    float wave_speed{1.f};
-    float wave_witdh{1e-1f};
-    float wave_range{5e-2f};
-    uint16_t nStep{100u};
-    uint16_t nParticles{50u};
-    uint8_t nDim{2u};
-    uint8_t nThreads{4u};
-    bool walls{false};
+    float lBox = 1.f;
+    float dX = 1e-4f;
+    float dT = 1e-2f;
+    float wave_speed = 1.f;
+    float wave_witdh = 1e-1f;
+    float wave_range = 5e-2f;
+    uint16_t nStep = 100u;
+    uint16_t nParticles = 50u;
+    uint8_t nDim = 2u;
+    uint8_t nThreads = 4u;
+    bool walls = false;
 
-    for(auto i{1}; i < argc; i++)
+    for(auto i = 1; i < argc; i++)
     {
 		if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
         {

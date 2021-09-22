@@ -31,6 +31,7 @@ private:
     {
         int t;
         int p;
+        bool q;
         float x;
         float y;
         //float z;
